@@ -15,6 +15,10 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use(express.json());
 
+const usuarioRoutes = require('./routes/usuarioRoutes');
+
+app.use('/usuarios', usuarioRoutes);
+
 app.get('/', (req, res) => {
   res.json({
     mensagem: 'API funcionando!'
