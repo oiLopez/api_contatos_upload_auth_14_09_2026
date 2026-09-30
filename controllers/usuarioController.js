@@ -1,5 +1,6 @@
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 exports.registrar = async (req, res) => {
   const { nome, email, senha } = req.body;
@@ -28,6 +29,45 @@ exports.registrar = async (req, res) => {
 
     res.status(500).json({
       mensagem: 'Erro ao registrar',
+      detalhe: err.message
+    });
+  }
+};
+
+exports.login = async (req, res) => {
+  const { email, senha } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ email });
+
+    if (!usuario) {
+      return res.status(404).json({
+        mensagem: 'Usuário não encontrado'
+      });
+    }
+
+    const senhaValida = bcrypt.compareSync(
+      senha,
+      usuario.senhaHash
+    );
+
+    if (!senhaValida) {
+      return res.status(401).json({
+        mensagem: 'Senha incorreta'
+      });
+    }
+
+    const token = jwt.sign(
+      { id: usuario._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token });
+
+  } catch (err) {
+    res.status(500).json({
+      mensagem: 'Erro ao autenticar',
       detalhe: err.message
     });
   }
