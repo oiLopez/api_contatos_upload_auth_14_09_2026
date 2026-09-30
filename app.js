@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
+const auth = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -26,3 +27,12 @@ app.get('/', (req, res) => {
 });
 
 module.exports = app;
+
+app.get('/protegida', auth, (req, res) => {
+  res.json({
+    mensagem: 'Acesso autorizado',
+    usuarioId: req.usuarioId
+  });
+});
+
+
