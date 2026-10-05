@@ -4,8 +4,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const auth = require('./middleware/authMiddleware');
-const contatoRoutes = require('./routes/contatoRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const contatoRoutes = require('./routes/contatoRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use('/usuarios', usuarioRoutes);
 app.use('/contatos', contatoRoutes);
+app.use('/upload', uploadRoutes);
 
 app.get('/', (req, res) => {
   res.json({
