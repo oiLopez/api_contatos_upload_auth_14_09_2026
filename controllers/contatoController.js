@@ -28,6 +28,35 @@ exports.criar = async (req, res) => {
   }
 };
 
+exports.atualizar = async (req, res) => {
+  try {
+    const atualizado = await Contato.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        usuarioId: req.usuarioId
+      },
+      req.body,
+      {
+        new: true
+      }
+    );
+
+    if (!atualizado) {
+      return res.status(404).json({
+        mensagem: 'Contato não encontrado'
+      });
+    }
+
+    res.json(atualizado);
+
+  } catch (err) {
+    res.status(500).json({
+      mensagem: 'Erro ao atualizar contato',
+      detalhe: err.message
+    });
+  }
+};
+
 exports.listar = async (req, res) => {
   try {
     const contatos = await Contato.find({
@@ -39,6 +68,55 @@ exports.listar = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       mensagem: 'Erro ao listar contatos',
+      detalhe: err.message
+    });
+  }
+};
+
+exports.buscarPorId = async (req, res) => {
+  try {
+    const contato = await Contato.findOne({
+      _id: req.params.id,
+      usuarioId: req.usuarioId
+    });
+
+    if (!contato) {
+      return res.status(404).json({
+        mensagem: 'Contato não encontrado'
+      });
+    }
+
+    res.json(contato);
+
+  } catch (err) {
+    res.status(500).json({
+      mensagem: 'Erro ao buscar contato',
+      detalhe: err.message
+    });
+  }
+};
+
+
+exports.deletar = async (req, res) => {
+  try {
+    const excluido = await Contato.findOneAndDelete({
+      _id: req.params.id,
+      usuarioId: req.usuarioId
+    });
+
+    if (!excluido) {
+      return res.status(404).json({
+        mensagem: 'Contato não encontrado'
+      });
+    }
+
+    res.json({
+      mensagem: 'Contato deletado'
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      mensagem: 'Erro ao deletar contato',
       detalhe: err.message
     });
   }
